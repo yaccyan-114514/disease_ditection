@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.FrameworkMapper">
+
+    <select id="ping" resultType="string">
+        SELECT 'SSM 框架已就绪' AS message
+    </select>
+
+</mapper>
+

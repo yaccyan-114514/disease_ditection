@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.AnswerMapper">
+
+    <resultMap id="answerResult" type="Answer">
+        <id column="id" property="id"/>
+        <result column="question_id" property="questionId"/>
+        <result column="expert_id" property="expertId"/>
+        <result column="answer_text" property="answerText"/>
+        <result column="created_at" property="createdAt"/>
+        <association property="expert" javaType="Expert">
+            <id column="expert_id" property="id"/>
+            <result column="expert_name" property="name"/>
+            <result column="expert_title" property="title"/>
+            <result column="expert_specialty" property="specialty"/>
+        </association>
+    </resultMap>
+
+    <select id="findByQuestionId" parameterType="long" resultMap="answerResult">
+        SELECT a.*, e.name AS expert_name, e.title AS expert_title, e.specialty AS expert_specialty
+        FROM answers a
+                 LEFT JOIN experts e ON a.expert_id = e.id
+        WHERE a.question_id = #{questionId}
+        ORDER BY a.created_at ASC
+    </select>
+
+    <insert id="insertAnswer" parameterType="Answer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO answers (question_id, expert_id, answer_text, created_at)
+        VALUES (#{questionId}, #{expertId}, #{answerText}, NOW())
+    </insert>
+</mapper>
+

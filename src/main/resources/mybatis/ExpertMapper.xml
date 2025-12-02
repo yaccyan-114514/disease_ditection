@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.ExpertMapper">
+
+    <resultMap id="expertResult" type="Expert">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="organization" property="organization"/>
+        <result column="title" property="title"/>
+        <result column="specialty" property="specialty"/>
+        <result column="bio" property="bio"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="findRandomActive" resultMap="expertResult">
+        SELECT * FROM experts WHERE status = 'active' ORDER BY RAND() LIMIT 1
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="expertResult">
+        SELECT * FROM experts WHERE id = #{id}
+    </select>
+</mapper>
+

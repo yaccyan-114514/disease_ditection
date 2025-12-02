@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.PostMapper">
+
+    <resultMap id="postResult" type="Post">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="images" property="images"/>
+        <result column="created_at" property="createdAt"/>
+        <association property="author" javaType="Farmer">
+            <id column="author_id" property="id"/>
+            <result column="author_name" property="name"/>
+            <result column="author_gender" property="gender"/>
+            <result column="author_phone" property="phone"/>
+            <result column="author_region" property="region"/>
+        </association>
+    </resultMap>
+
+    <select id="findLatest" resultMap="postResult">
+        SELECT p.*, f.id AS author_id, f.name AS author_name, f.gender AS author_gender,
+               f.phone AS author_phone, f.region AS author_region
+        FROM posts p
+                 LEFT JOIN farmers f ON p.user_id = f.id
+        ORDER BY p.created_at DESC
+        LIMIT 20
+    </select>
+</mapper>
+

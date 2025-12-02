@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.CommentMapper">
+
+    <resultMap id="commentResult" type="Comment">
+        <id column="id" property="id"/>
+        <result column="post_id" property="postId"/>
+        <result column="user_id" property="userId"/>
+        <result column="content" property="content"/>
+        <result column="created_at" property="createdAt"/>
+        <association property="author" javaType="Farmer">
+            <id column="author_id" property="id"/>
+            <result column="author_name" property="name"/>
+            <result column="author_phone" property="phone"/>
+            <result column="author_region" property="region"/>
+        </association>
+    </resultMap>
+
+    <select id="findByPostIds" resultMap="commentResult">
+        SELECT c.*, f.id AS author_id, f.name AS author_name, f.phone AS author_phone, f.region AS author_region
+        FROM comments c
+                 LEFT JOIN farmers f ON c.user_id = f.id
+        WHERE c.post_id IN
+        <foreach collection="postIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY c.created_at ASC
+    </select>
+</mapper>
+

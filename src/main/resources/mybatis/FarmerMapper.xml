@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.FarmerMapper">
+
+    <resultMap id="farmerResult" type="Farmer">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="phone" property="phone"/>
+        <result column="id_card" property="idCard"/>
+        <result column="password" property="password"/>
+        <result column="region" property="region"/>
+        <result column="address" property="address"/>
+        <result column="farm_size" property="farmSize"/>
+        <result column="main_crops" property="mainCrops"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="findByPhone" parameterType="string" resultMap="farmerResult">
+        SELECT * FROM farmers WHERE phone = #{phone}
+    </select>
+
+    <insert id="insertFarmer" parameterType="Farmer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO farmers (name, gender, phone, id_card, password, region, address, farm_size, main_crops, status)
+        VALUES (#{name}, #{gender}, #{phone}, #{idCard}, #{password}, #{region}, #{address}, #{farmSize}, #{mainCrops}, #{status})
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="farmerResult">
+        SELECT * FROM farmers WHERE id = #{id}
+    </select>
+</mapper>
+
