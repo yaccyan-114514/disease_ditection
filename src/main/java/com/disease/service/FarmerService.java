@@ -36,5 +36,9 @@ public class FarmerService {
     public Farmer findById(Long id) {
         return farmerMapper.findById(id);
     }
+
+    public int updateFarmer(Farmer farmer) {
+        return farmerMapper.updateFarmer(farmer);
+    }
 }
 

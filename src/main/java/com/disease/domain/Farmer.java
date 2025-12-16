@@ -14,6 +14,7 @@ public class Farmer {
     private String address;
     private BigDecimal farmSize;
     private String mainCrops;
+    private Long expertId;
     private LocalDateTime createdAt;
     private String status;
 
@@ -111,6 +112,14 @@ public class Farmer {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getExpertId() {
+        return expertId;
+    }
+
+    public void setExpertId(Long expertId) {
+        this.expertId = expertId;
     }
 }
 

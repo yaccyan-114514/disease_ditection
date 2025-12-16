@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.DiseasePesticideMapper">
+
+    <resultMap id="diseasePesticideResult" type="DiseasePesticide">
+        <id column="id" property="id"/>
+        <result column="disease_id" property="diseaseId"/>
+        <result column="pesticide_id" property="pesticideId"/>
+        <result column="recommended_dose" property="recommendedDose"/>
+        <result column="notes" property="notes"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="diseasePesticideResult">
+        SELECT * FROM diseases_pesticides ORDER BY id DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="diseasePesticideResult">
+        SELECT * FROM diseases_pesticides WHERE id = #{id}
+    </select>
+
+    <select id="findByDiseaseId" parameterType="long" resultMap="diseasePesticideResult">
+        SELECT * FROM diseases_pesticides WHERE disease_id = #{diseaseId} ORDER BY id DESC
+    </select>
+
+    <select id="findByPesticideId" parameterType="long" resultMap="diseasePesticideResult">
+        SELECT * FROM diseases_pesticides WHERE pesticide_id = #{pesticideId} ORDER BY id DESC
+    </select>
+
+    <insert id="insert" parameterType="DiseasePesticide" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO diseases_pesticides (disease_id, pesticide_id, recommended_dose, notes)
+        VALUES (#{diseaseId}, #{pesticideId}, #{recommendedDose}, #{notes})
+    </insert>
+
+    <update id="update" parameterType="DiseasePesticide">
+        UPDATE diseases_pesticides
+        SET disease_id = #{diseaseId}, pesticide_id = #{pesticideId},
+            recommended_dose = #{recommendedDose}, notes = #{notes}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM diseases_pesticides WHERE id = #{id}
+    </delete>
+</mapper>

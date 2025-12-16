@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.AdminMapper">
+
+    <resultMap id="adminResult" type="Admin">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="findByUsername" parameterType="string" resultMap="adminResult">
+        SELECT * FROM admins WHERE username = #{username} AND status = 'active'
+    </select>
+
+    <select id="findByPhone" parameterType="string" resultMap="adminResult">
+        SELECT * FROM admins WHERE phone = #{phone} AND status = 'active'
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="adminResult">
+        SELECT * FROM admins WHERE id = #{id}
+    </select>
+
+    <update id="updateAdmin" parameterType="Admin">
+        UPDATE admins
+        SET username = #{username}, password = #{password}, name = #{name},
+            phone = #{phone}, email = #{email}
+        WHERE id = #{id}
+    </update>
+</mapper>

@@ -1,6 +1,10 @@
 package com.disease.domain;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
@@ -75,6 +79,30 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+    
+    /**
+     * 获取图片列表（从 JSON 字符串解析）
+     */
+    public List<String> getImageList() {
+        if (images == null || images.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(images, new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            // 如果解析失败，尝试作为单个字符串处理（兼容旧数据）
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * 获取第一张图片（用于显示）
+     */
+    public String getFirstImage() {
+        List<String> imageList = getImageList();
+        return imageList.isEmpty() ? null : imageList.get(0);
     }
 }
 

@@ -7,6 +7,7 @@ public class Expert {
     private String name;
     private String gender;
     private String phone;
+    private String password;
     private String email;
     private String organization;
     private String title;
@@ -45,6 +46,14 @@ public class Expert {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {

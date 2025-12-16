@@ -28,5 +28,28 @@
         </foreach>
         ORDER BY c.created_at ASC
     </select>
+
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (post_id, user_id, content, created_at)
+        VALUES (#{postId}, #{userId}, #{content}, NOW())
+    </insert>
+
+    <select id="findAll" resultMap="commentResult">
+        SELECT c.*, f.id AS author_id, f.name AS author_name, f.phone AS author_phone, f.region AS author_region
+        FROM comments c
+                 LEFT JOIN farmers f ON c.user_id = f.id
+        ORDER BY c.created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="commentResult">
+        SELECT c.*, f.id AS author_id, f.name AS author_name, f.phone AS author_phone, f.region AS author_region
+        FROM comments c
+                 LEFT JOIN farmers f ON c.user_id = f.id
+        WHERE c.id = #{id}
+    </select>
+
+    <delete id="deleteComment" parameterType="long">
+        DELETE FROM comments WHERE id = #{id}
+    </delete>
 </mapper>
 

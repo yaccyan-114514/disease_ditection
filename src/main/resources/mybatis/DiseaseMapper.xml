@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.DiseaseMapper">
+
+    <resultMap id="diseaseResult" type="Disease">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="host_crop" property="hostCrop"/>
+        <result column="symptoms" property="symptoms"/>
+        <result column="harm_level" property="harmLevel"/>
+        <result column="occurrence_season" property="occurrenceSeason"/>
+        <result column="climate_conditions" property="climateConditions"/>
+        <result column="soil_conditions" property="soilConditions"/>
+        <result column="risk_factors" property="riskFactors"/>
+        <result column="diagnosis_keypoints" property="diagnosisKeypoints"/>
+        <result column="similar_diseases" property="similarDiseases"/>
+        <result column="prevention_methods" property="preventionMethods"/>
+        <result column="control_methods" property="controlMethods"/>
+        <result column="chemical_control" property="chemicalControl"/>
+        <result column="biological_control" property="biologicalControl"/>
+        <result column="agricultural_control" property="agriculturalControl"/>
+        <result column="is_green_control" property="isGreenControl"/>
+        <result column="images" property="images"/>
+        <result column="region" property="region"/>
+        <result column="quarantine_level" property="quarantineLevel"/>
+        <result column="report_source" property="reportSource"/>
+        <result column="created_by" property="createdBy"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="diseaseResult">
+        SELECT * FROM diseases ORDER BY id DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="diseaseResult">
+        SELECT * FROM diseases WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Disease" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO diseases (name, type, host_crop, symptoms, harm_level, occurrence_season,
+            climate_conditions, soil_conditions, risk_factors, diagnosis_keypoints, similar_diseases,
+            prevention_methods, control_methods, chemical_control, biological_control, agricultural_control,
+            is_green_control, images, region, quarantine_level, report_source, created_by)
+        VALUES (#{name}, #{type}, #{hostCrop}, #{symptoms}, #{harmLevel}, #{occurrenceSeason},
+            #{climateConditions}, #{soilConditions}, #{riskFactors}, #{diagnosisKeypoints}, #{similarDiseases},
+            #{preventionMethods}, #{controlMethods}, #{chemicalControl}, #{biologicalControl}, #{agriculturalControl},
+            #{isGreenControl}, #{images}, #{region}, #{quarantineLevel}, #{reportSource}, #{createdBy})
+    </insert>
+
+    <update id="update" parameterType="Disease">
+        UPDATE diseases
+        SET name = #{name}, type = #{type}, host_crop = #{hostCrop}, symptoms = #{symptoms},
+            harm_level = #{harmLevel}, occurrence_season = #{occurrenceSeason},
+            climate_conditions = #{climateConditions}, soil_conditions = #{soilConditions},
+            risk_factors = #{riskFactors}, diagnosis_keypoints = #{diagnosisKeypoints},
+            similar_diseases = #{similarDiseases}, prevention_methods = #{preventionMethods},
+            control_methods = #{controlMethods}, chemical_control = #{chemicalControl},
+            biological_control = #{biologicalControl}, agricultural_control = #{agriculturalControl},
+            is_green_control = #{isGreenControl}, images = #{images}, region = #{region},
+            quarantine_level = #{quarantineLevel}, report_source = #{reportSource}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM diseases WHERE id = #{id}
+    </delete>
+</mapper>

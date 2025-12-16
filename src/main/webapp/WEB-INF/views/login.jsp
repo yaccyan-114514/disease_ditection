@@ -4,7 +4,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>农户登录</title>
+    <title>用户登录</title>
     <style>
         body {font-family: "PingFang SC", sans-serif; background: #f6f8fa; margin: 0;}
         .panel {max-width: 420px; margin: 80px auto; background: #fff; padding: 32px; border-radius: 12px; box-shadow:0 15px 35px rgba(15,23,42,.12);}
@@ -19,13 +19,13 @@
 </head>
 <body>
 <div class="panel">
-    <h2>农户登录</h2>
+    <h2>用户登录</h2>
     <c:if test="${not empty error}">
         <div class="error">${error}</div>
     </c:if>
-    <form method="post" action="${pageContext.request.contextPath}/farmer/login">
-        <label>手机号</label>
-        <input type="text" name="phone" placeholder="请输入手机号" required>
+    <form method="post" action="${pageContext.request.contextPath}/login">
+        <label>手机号/用户名</label>
+        <input type="text" name="phone" placeholder="请输入手机号或用户名（管理员）" required>
         <label>密码</label>
         <input type="password" name="password" placeholder="请输入密码" required>
         <button type="submit" class="btn">登录</button>

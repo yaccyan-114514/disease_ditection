@@ -9,6 +9,7 @@
         <result column="name" property="name"/>
         <result column="gender" property="gender"/>
         <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
         <result column="email" property="email"/>
         <result column="organization" property="organization"/>
         <result column="title" property="title"/>
@@ -25,5 +26,30 @@
     <select id="findById" parameterType="long" resultMap="expertResult">
         SELECT * FROM experts WHERE id = #{id}
     </select>
+
+    <select id="findByPhone" parameterType="string" resultMap="expertResult">
+        SELECT * FROM experts WHERE phone = #{phone}
+    </select>
+
+    <select id="findAll" resultMap="expertResult">
+        SELECT * FROM experts ORDER BY created_at DESC
+    </select>
+
+    <insert id="insertExpert" parameterType="Expert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO experts (name, gender, phone, email, password, organization, title, specialty, bio, status)
+        VALUES (#{name}, #{gender}, #{phone}, #{email}, #{password}, #{organization}, #{title}, #{specialty}, #{bio}, #{status})
+    </insert>
+
+    <update id="updateExpert" parameterType="Expert">
+        UPDATE experts
+        SET name = #{name}, gender = #{gender}, phone = #{phone}, email = #{email},
+            password = #{password}, organization = #{organization}, title = #{title},
+            specialty = #{specialty}, bio = #{bio}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteExpert" parameterType="long">
+        DELETE FROM experts WHERE id = #{id}
+    </delete>
 </mapper>
 

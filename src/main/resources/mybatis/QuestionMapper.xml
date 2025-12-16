@@ -22,5 +22,21 @@
     <select id="findLatest" parameterType="int" resultMap="questionResult">
         SELECT * FROM questions ORDER BY created_at DESC LIMIT #{limit}
     </select>
+
+    <select id="findByExpertId" parameterType="long" resultMap="questionResult">
+        SELECT DISTINCT q.*
+        FROM questions q
+        INNER JOIN answers a ON q.id = a.question_id
+        WHERE a.expert_id = #{expertId}
+        ORDER BY q.created_at DESC
+    </select>
+
+    <select id="findByUserId" parameterType="long" resultMap="questionResult">
+        SELECT * FROM questions WHERE user_id = #{userId} ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="questionResult">
+        SELECT * FROM questions WHERE id = #{id}
+    </select>
 </mapper>
 

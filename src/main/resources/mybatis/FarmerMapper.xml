@@ -15,6 +15,7 @@
         <result column="address" property="address"/>
         <result column="farm_size" property="farmSize"/>
         <result column="main_crops" property="mainCrops"/>
+        <result column="expert_id" property="expertId"/>
         <result column="created_at" property="createdAt"/>
         <result column="status" property="status"/>
     </resultMap>
@@ -31,5 +32,22 @@
     <select id="findById" parameterType="long" resultMap="farmerResult">
         SELECT * FROM farmers WHERE id = #{id}
     </select>
+
+    <select id="findAll" resultMap="farmerResult">
+        SELECT * FROM farmers ORDER BY created_at DESC
+    </select>
+
+    <update id="updateFarmer" parameterType="Farmer">
+        UPDATE farmers
+        SET name = #{name}, gender = #{gender}, phone = #{phone}, id_card = #{idCard},
+            password = #{password}, region = #{region}, address = #{address},
+            farm_size = #{farmSize}, main_crops = #{mainCrops}, expert_id = #{expertId},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteFarmer" parameterType="long">
+        DELETE FROM farmers WHERE id = #{id}
+    </delete>
 </mapper>
 

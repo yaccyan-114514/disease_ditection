@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.PrivateMessageMapper">
+
+    <resultMap id="privateMessageResult" type="PrivateMessage">
+        <id column="id" property="id"/>
+        <result column="sender_id" property="senderId"/>
+        <result column="sender_type" property="senderType"/>
+        <result column="receiver_id" property="receiverId"/>
+        <result column="receiver_type" property="receiverType"/>
+        <result column="content" property="content"/>
+        <result column="is_read" property="isRead"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="read_at" property="readAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="PrivateMessage" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO private_messages (sender_id, sender_type, receiver_id, receiver_type, content, is_read, created_at)
+        VALUES (#{senderId}, #{senderType}, #{receiverId}, #{receiverType}, #{content}, #{isRead}, #{createdAt})
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="privateMessageResult">
+        SELECT * FROM private_messages WHERE id = #{id}
+    </select>
+
+    <select id="findConversation" resultMap="privateMessageResult">
+        SELECT * FROM private_messages
+        WHERE ((sender_id = #{userId1} AND sender_type = #{userType1} AND receiver_id = #{userId2} AND receiver_type = #{userType2})
+           OR (sender_id = #{userId2} AND sender_type = #{userType2} AND receiver_id = #{userId1} AND receiver_type = #{userType1}))
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="findConversationList" resultMap="privateMessageResult">
+        SELECT pm1.* FROM private_messages pm1
+        INNER JOIN (
+            SELECT 
+                CASE 
+                    WHEN sender_id = #{userId} AND sender_type = #{userType} THEN receiver_id
+                    ELSE sender_id
+                END AS other_user_id,
+                CASE 
+                    WHEN sender_id = #{userId} AND sender_type = #{userType} THEN receiver_type
+                    ELSE sender_type
+                END AS other_user_type,
+                MAX(id) AS max_id
+            FROM private_messages
+            WHERE (sender_id = #{userId} AND sender_type = #{userType})
+               OR (receiver_id = #{userId} AND receiver_type = #{userType})
+            GROUP BY other_user_id, other_user_type
+        ) pm2 ON pm1.id = pm2.max_id
+        ORDER BY pm1.created_at DESC
+    </select>
+
+    <select id="countUnreadByReceiver" resultType="int">
+        SELECT COUNT(*) FROM private_messages
+        WHERE receiver_id = #{receiverId} AND receiver_type = #{receiverType} AND is_read = 0
+    </select>
+
+    <select id="countUnreadBySenderAndReceiver" resultType="int">
+        SELECT COUNT(*) FROM private_messages
+        WHERE sender_id = #{senderId} AND sender_type = #{senderType}
+          AND receiver_id = #{receiverId} AND receiver_type = #{receiverType}
+          AND is_read = 0
+    </select>
+
+    <update id="markAsRead">
+        UPDATE private_messages
+        SET is_read = 1, read_at = #{readAt}
+        WHERE id = #{id}
+    </update>
+
+    <update id="markConversationAsRead">
+        UPDATE private_messages
+        SET is_read = 1, read_at = #{readAt}
+        WHERE sender_id = #{senderId} AND sender_type = #{senderType}
+          AND receiver_id = #{receiverId} AND receiver_type = #{receiverType}
+          AND is_read = 0
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM private_messages WHERE id = #{id}
+    </delete>
+
+</mapper>

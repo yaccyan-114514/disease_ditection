@@ -7,6 +7,7 @@ public class Answer {
     private Long questionId;
     private Long expertId;
     private String answerText;
+    private String images;
     private LocalDateTime createdAt;
     private Expert expert;
 
@@ -56,6 +57,14 @@ public class Answer {
 
     public void setExpert(Expert expert) {
         this.expert = expert;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 }
 

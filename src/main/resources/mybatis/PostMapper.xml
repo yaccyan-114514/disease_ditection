@@ -28,5 +28,30 @@
         ORDER BY p.created_at DESC
         LIMIT 20
     </select>
+
+    <insert id="insertPost" parameterType="Post" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO posts (user_id, title, content, images, created_at)
+        VALUES (#{userId}, #{title}, #{content}, #{images}, NOW())
+    </insert>
+
+    <select id="findAll" resultMap="postResult">
+        SELECT p.*, f.id AS author_id, f.name AS author_name, f.gender AS author_gender,
+               f.phone AS author_phone, f.region AS author_region
+        FROM posts p
+                 LEFT JOIN farmers f ON p.user_id = f.id
+        ORDER BY p.created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="postResult">
+        SELECT p.*, f.id AS author_id, f.name AS author_name, f.gender AS author_gender,
+               f.phone AS author_phone, f.region AS author_region
+        FROM posts p
+                 LEFT JOIN farmers f ON p.user_id = f.id
+        WHERE p.id = #{id}
+    </select>
+
+    <delete id="deletePost" parameterType="long">
+        DELETE FROM posts WHERE id = #{id}
+    </delete>
 </mapper>
 

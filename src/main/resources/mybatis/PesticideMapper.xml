@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.disease.mapper.PesticideMapper">
+
+    <resultMap id="pesticideResult" type="Pesticide">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="composition" property="composition"/>
+        <result column="toxicity_level" property="toxicityLevel"/>
+        <result column="safe_interval" property="safeInterval"/>
+        <result column="dilution_ratio" property="dilutionRatio"/>
+        <result column="usage_method" property="usageMethod"/>
+        <result column="approval_number" property="approvalNumber"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="pesticideResult">
+        SELECT * FROM pesticides ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="pesticideResult">
+        SELECT * FROM pesticides WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Pesticide" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pesticides (name, composition, toxicity_level, safe_interval, dilution_ratio, usage_method, approval_number)
+        VALUES (#{name}, #{composition}, #{toxicityLevel}, #{safeInterval}, #{dilutionRatio}, #{usageMethod}, #{approvalNumber})
+    </insert>
+
+    <update id="update" parameterType="Pesticide">
+        UPDATE pesticides
+        SET name = #{name}, composition = #{composition}, toxicity_level = #{toxicityLevel},
+            safe_interval = #{safeInterval}, dilution_ratio = #{dilutionRatio},
+            usage_method = #{usageMethod}, approval_number = #{approvalNumber}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM pesticides WHERE id = #{id}
+    </delete>
+</mapper>
