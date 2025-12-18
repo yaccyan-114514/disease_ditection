@@ -123,6 +123,8 @@
                     <path>/disease_ditection</path>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
+                    <!-- 监听所有网络接口，允许外部访问 -->
+                    <host>0.0.0.0</host>
                 </configuration>
             </plugin>
         </plugins>

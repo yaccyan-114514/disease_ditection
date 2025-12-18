@@ -72,8 +72,21 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 如果IP地址发生变化，说明可能是异地登录，强制重新登录
+        // 检查是否为 Tailscale IP（100.x.x.x 网段）
+        // 如果是 Tailscale 网络，允许不同设备访问（因为每个设备有自己的 Tailscale IP）
+        boolean isTailscaleIp = currentIp != null && currentIp.startsWith("100.");
+        boolean isSessionTailscaleIp = sessionIp != null && sessionIp.startsWith("100.");
+        
+        // 如果IP地址发生变化
         if (!sessionIp.equals(currentIp)) {
+            // 如果都是 Tailscale IP，允许访问（不同设备在 Tailscale 网络中会有不同 IP）
+            if (isTailscaleIp && isSessionTailscaleIp) {
+                // 更新 session 中的 IP 地址，允许访问
+                session.setAttribute("userIpAddress", currentIp);
+                return true;
+            }
+            
+            // 非 Tailscale 网络或混合情况，执行安全检查
             // 清除session中的所有用户信息
             session.removeAttribute("currentFarmer");
             session.removeAttribute("currentExpert");
