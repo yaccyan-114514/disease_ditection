@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库服务
+  mysql:
+    # 使用 Debian 版本（更小，下载更快，网络要求更低）
+    image: mysql:8.0-debian
+    # 如果上面不行，可以尝试：
+    # image: mysql:8.0  # 官方完整版本
+    container_name: disease_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Jiujiu0427}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-disease_detection}
+      MYSQL_USER: ${MYSQL_USER:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-Jiujiu0427}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./disease_detection.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - disease_network
+
+  # Python AI 服务
+  python-api:
+    build:
+      context: ./python_service
+      dockerfile: Dockerfile
+    container_name: disease_python_api
+    ports:
+      - "5050:5050"
+    environment:
+      - PORT=5050
+      - API_HOST=0.0.0.0
+    volumes:
+      - ./python_service/streamlit_app/model:/app/streamlit_app/model:ro
+      - ./python_service/uploads:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - disease_network
+    restart: unless-stopped
+
+  # Java Web 应用
+  java-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.java
+    container_name: disease_java_web
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-disease_detection}
+      - MYSQL_USER=${MYSQL_USER:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-Jiujiu0427}
+      - AI_SERVICE_URL=http://python-api:5050
+    volumes:
+      - ./src/main/webapp/uploads:/usr/local/tomcat/webapps/disease_ditection/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      python-api:
+        condition: service_started
+    networks:
+      - disease_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  disease_network:
+    driver: bridge
